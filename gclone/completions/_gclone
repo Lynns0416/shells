@@ -4,8 +4,9 @@ _gclone() {
   local -a items
 
   _arguments \
-    '1:cmd:(add list rm)' \
-    '2:arg:->arg'
+    '1:cmd:(add list rm mv)' \
+    '2:arg:->arg' \
+    '3:arg:->arg2'
 
   case $state in
     arg)
@@ -14,9 +15,16 @@ _gclone() {
           items=("${(f)$(git for-each-ref --format='%(refname:short)' refs/heads refs/remotes/origin 2>/dev/null)}")
           compadd -- $items
           ;;
-        rm)
+        rm|mv)
           items=("${(f)$(cat "$index" 2>/dev/null)}")
           compadd -- $items
+          ;;
+      esac
+      ;;
+    arg2)
+      case $words[2] in
+        mv)
+          _files -/
           ;;
       esac
       ;;
